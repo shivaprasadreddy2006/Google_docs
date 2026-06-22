@@ -3,6 +3,7 @@ import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { PlusCircle, LogOut, FileText, Table, Bell, Users, Zap, Shield } from 'lucide-react';
+import { apiUrl } from '../config';
 
 const Dashboard = () => {
   const [documents, setDocuments] = useState([]);
@@ -13,7 +14,7 @@ const Dashboard = () => {
 
   const fetchDocuments = async () => {
     try {
-      const { data } = await axios.get('http://localhost:5000/api/documents', {
+      const { data } = await axios.get(apiUrl('/api/documents'), {
         headers: { Authorization: `Bearer ${user.token}` }
       });
       setDocuments(data);
@@ -24,7 +25,7 @@ const Dashboard = () => {
 
   const fetchInvitations = async () => {
     try {
-      const { data } = await axios.get('http://localhost:5000/api/invitations/pending', {
+      const { data } = await axios.get(apiUrl('/api/invitations/pending'), {
         headers: { Authorization: `Bearer ${user.token}` }
       });
       setInvitations(data);
@@ -46,7 +47,7 @@ const Dashboard = () => {
     if (!title) return;
 
     try {
-      const { data } = await axios.post('http://localhost:5000/api/documents', 
+      const { data } = await axios.post(apiUrl('/api/documents'), 
         { title, type }, 
         { headers: { Authorization: `Bearer ${user.token}` }}
       );
@@ -58,7 +59,7 @@ const Dashboard = () => {
 
   const respondToInvite = async (id, accept) => {
     try {
-      await axios.post(`http://localhost:5000/api/invitations/${id}/respond`, { accept }, {
+      await axios.post(apiUrl(`/api/invitations/${id}/respond`), { accept }, {
         headers: { Authorization: `Bearer ${user.token}` }
       });
       fetchInvitations();

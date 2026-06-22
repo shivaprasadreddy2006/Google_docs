@@ -6,6 +6,7 @@ import TextEditor from '../components/TextEditor';
 import TabularEditor from '../components/TabularEditor';
 import { AuthContext } from '../context/AuthContext';
 import { ArrowLeft, Share2 } from 'lucide-react';
+import { API_BASE_URL, apiUrl } from '../config';
 
 const Document = () => {
   const { id } = useParams();
@@ -17,7 +18,7 @@ const Document = () => {
   useEffect(() => {
     const fetchDocument = async () => {
       try {
-        const { data } = await axios.get(`http://localhost:5000/api/documents/${id}`, {
+        const { data } = await axios.get(apiUrl(`/api/documents/${id}`), {
           headers: { Authorization: `Bearer ${user.token}` }
         });
         setDocument(data);
@@ -30,7 +31,7 @@ const Document = () => {
   }, [id, user.token, navigate]);
 
   useEffect(() => {
-    const s = io('http://localhost:5000');
+    const s = io(API_BASE_URL);
     setSocket(s);
     return () => s.disconnect();
   }, []);
@@ -40,7 +41,7 @@ const Document = () => {
     if (!email) return;
 
     try {
-      await axios.post('http://localhost:5000/api/invitations/invite', 
+      await axios.post(apiUrl('/api/invitations/invite'), 
         { documentId: id, recipientEmail: email },
         { headers: { Authorization: `Bearer ${user.token}` } }
       );
